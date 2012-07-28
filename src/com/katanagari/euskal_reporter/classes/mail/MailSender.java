@@ -6,9 +6,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.katanagari.euskal_reporter.classes.mail.formatter.MessageFormatter;
 import com.katanagari.euskal_reporter.classes.model.Report;
 
 
@@ -16,11 +18,13 @@ public class MailSender extends AsyncTask<MimeMessage, Void, Boolean> {
 	private GmailService mailService;
 	private SenderAccount sender;
 	private MailSenderCallback callback;
+	private Resources resources;
 		
-	public MailSender(MailSenderCallback callback){
+	public MailSender(MailSenderCallback callback, Resources resources){
 		this.mailService = new GmailService();
 		this.sender = new SenderAccount();
 		this.callback = callback;
+		this.resources = resources;
 	}
 	
 	public void sendMessage(Report report, String recipient) {
@@ -38,9 +42,7 @@ public class MailSender extends AsyncTask<MimeMessage, Void, Boolean> {
 			mail.setFrom(new InternetAddress(this.sender.getUserAddress()));
 			mail.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(recipient));			
 
-			mail.setSubject("A new report here!");
-			mail.setContent(report.getDescription(), "text/plain");
-			//Include attached photos here
+			new MessageFormatter(this.resources).formatReportIntoMimeMessage(report, mail);
 		}
 		catch(MessagingException e){
 			Log.d(this.getClass().getName(), "Could not fill the mail object:" + e.getMessage());
