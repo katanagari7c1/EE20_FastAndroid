@@ -2,7 +2,11 @@ package com.katanagari.euskal_reporter.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -34,8 +38,12 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
         this.initializeFormWidgetListeners();
         
         this.setSubmitButtonAction();
+        this.initializePhotoButtons();
     }
 
+    /**
+     * Initialization helpers
+     */
 	private void createProgressDialog() {
 		this.progressDialog = new ProgressDialog(this);
 		this.progressDialog.setTitle("lalala");
@@ -60,7 +68,49 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 //      getMenuInflater().inflate(R.menu.main_screen, menu);
 //      return true;
 //  }
+	/**
+	 * Photo picker result
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(resultCode == RESULT_OK){
+			Uri targetUri = data.getData();
+		}
+	}
     
+	/**
+	 * Button actions
+	 */
+	
+	private void initializePhotoButtons() {
+		Button addPhotoButton = (Button)findViewById(R.id.takePhotoButton);
+		
+		if( deviceHasACamera() ) {
+			addPhotoButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					onAddPhotoButtonPressed();
+				}
+			});	
+		}
+		else{
+			addPhotoButton.setVisibility(View.GONE);
+		}
+		
+		
+		Button pickPhotoButton = (Button)findViewById(R.id.pickPhotoButton);
+		pickPhotoButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onPickPhotoButtonPressed();
+			}
+		});		
+	}
+	
 	private void setSubmitButtonAction() {
 		Button submitButton = (Button)findViewById(R.id.submit_button);
 		
@@ -73,6 +123,19 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		});
 	}
 	
+	private void onAddPhotoButtonPressed() {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		startActivityForResult(intent, 0);			
+	}
+	
+	private void onPickPhotoButtonPressed() {
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		startActivityForResult(intent, 0);
+	}
+
+	private boolean deviceHasACamera() {
+		return this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+	}
 	
 	private void onSubmitButtonPressed(){
 		this.progressDialog.show();
@@ -83,6 +146,10 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		
 		new MailSender(this,this.getResources()).sendMessage(report, "javier.armendariz@quomai.com");
 	}
+	
+	/**
+	 * Report sending callback
+	 */
 
 	@Override
 	public void reportSentSuccessfully() {

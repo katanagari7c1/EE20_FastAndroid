@@ -1,35 +1,79 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/formScrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp" >
+    android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:text="@string/submit_button" />
-
-    <EditText
-        android:id="@+id/descriptionField"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="left|top"
-        android:hint="@string/description_field_hint"
-        android:inputType="textMultiLine"
-        android:lines="4" />
+        android:padding="20dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-    <Spinner
-        android:id="@+id/reportCategoryField"
-        android:layout_above="@id/descriptionField"
-        android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <Spinner
+            android:id="@+id/reportCategoryField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="50dp" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/descriptionField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reportCategoryField"
+            android:gravity="left|top"
+            android:hint="@string/description_field_hint"
+            android:inputType="textMultiLine"
+            android:lines="4" />
+
+        <LinearLayout
+            android:id="@+id/imagePreviewArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionField"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/addImageButtonArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/takePhotoButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Take a photo" />
+
+                <Button
+                    android:id="@+id/pickPhotoButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Pick from gallery" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imagePreviewArea"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:text="@string/submit_button" />
+    </RelativeLayout>
+
+</ScrollView>
