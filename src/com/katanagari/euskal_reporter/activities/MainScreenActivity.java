@@ -11,23 +11,33 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
+import com.katanagari.euskal_reporter.classes.listener.CategorySpinnerListener;
 import com.katanagari.euskal_reporter.classes.mail.MailSender;
 import com.katanagari.euskal_reporter.classes.mail.MailSenderCallback;
 import com.katanagari.euskal_reporter.classes.model.Report;
 
 public class MainScreenActivity extends Activity implements MailSenderCallback {
+	
+	private Report report;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 		
-        this.setAdapterForCategoriesSpinner();
+        this.report = new Report();
+        
+        this.initializeCategorySpinnerData();
+        this.initializeFormWidgetListeners();
         
         this.setSubmitButtonAction();
     }
 
-	private void setAdapterForCategoriesSpinner() {
+	private void initializeFormWidgetListeners() {
+		((Spinner)findViewById(R.id.reportCategoryField)).setOnItemSelectedListener(new CategorySpinnerListener(this.report));
+	}
+
+	private void initializeCategorySpinnerData() {
 		Spinner categories = (Spinner)findViewById(R.id.reportCategoryField);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.report_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -57,7 +67,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		//Check if form has the minimum amount of data required
 		//If so, send it using a mail helper object
 		EditText description = (EditText)findViewById(R.id.descriptionField);
-		Report report = new Report(description.getText().toString());
+		this.report.setDescription(description.getText().toString());
 		
 		new MailSender(this).sendMessage(report, "javier.armendariz@quomai.com");
 	}
