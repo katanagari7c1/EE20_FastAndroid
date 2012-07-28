@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
@@ -20,8 +22,17 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 		
+        this.setAdapterForCategoriesSpinner();
+        
         this.setSubmitButtonAction();
     }
+
+	private void setAdapterForCategoriesSpinner() {
+		Spinner categories = (Spinner)findViewById(R.id.reportCategoryField);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.report_categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categories.setAdapter(adapter);
+	}
 
 //  @Override
 //  public boolean onCreateOptionsMenu(Menu menu) {
