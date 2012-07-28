@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="report_categories">
+        <item>Smoking on the partyplace</item>
+        <item>Non-validated network device</item>
+        <item>A plugged-in refrigerator!</item>
+        <item>Other (specify in description)</item>
+    </string-array>
+
+</resources>
