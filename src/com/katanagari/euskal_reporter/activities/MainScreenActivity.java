@@ -5,17 +5,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
-import com.katanagari.euskal_reporter.classes.MailHelper;
+import com.katanagari.euskal_reporter.classes.mail.MailSender;
+import com.katanagari.euskal_reporter.classes.mail.MailSenderCallback;
+import com.katanagari.euskal_reporter.classes.model.Report;
 
-public class MainScreenActivity extends Activity {
+public class MainScreenActivity extends Activity implements MailSenderCallback {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
-        
+		
         this.setSubmitButtonAction();
     }
 
@@ -41,11 +44,17 @@ public class MainScreenActivity extends Activity {
 	private void onSubmitButtonPressed(){
 		//Check if form has the minimum amount of data required
 		//If so, send it using a mail helper object
-		MailHelper helper = new MailHelper();
-		try {
-			helper.send();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Report report = new Report("Something happened somewhere");
+		new MailSender(this).sendMessage(report, "javier.armendariz@quomai.com");
+	}
+
+	@Override
+	public void reportSentSuccessfully() {
+		Toast.makeText(this, "Report sent! Yeeeha!", Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public void reportSendFailed() {
+		Toast.makeText(this, "Ow! the report could not be sent", Toast.LENGTH_LONG).show();
 	}
 }
