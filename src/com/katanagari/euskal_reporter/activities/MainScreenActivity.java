@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
@@ -44,7 +45,9 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	private void onSubmitButtonPressed(){
 		//Check if form has the minimum amount of data required
 		//If so, send it using a mail helper object
-		Report report = new Report("Something happened somewhere");
+		EditText description = (EditText)findViewById(R.id.descriptionField);
+		Report report = new Report(description.getText().toString());
+		
 		new MailSender(this).sendMessage(report, "javier.armendariz@quomai.com");
 	}
 
