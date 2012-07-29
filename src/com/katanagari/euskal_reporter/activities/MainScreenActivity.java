@@ -32,17 +32,18 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	private static final int REQUEST_TAKE_PHOTO = 0;
 	private static final int REQUEST_PICK_PHOTO = 1;
 	
-	private Report report;
-	private ProgressDialog progressDialog;
-	private String takenPhotoPath;
+	private static final String BUNDLE_STATE_REPORT = "bundle.state.report";
+
 	
+	private Report report;
+	private ProgressDialog progressDialog;	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 		
-        this.report = new Report();
+        this.loadReportFromInstanceStateIfAvailable(savedInstanceState);
         
 		this.createProgressDialog();
         this.initializeCategorySpinnerData();
@@ -50,6 +51,22 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
         
         this.setSubmitButtonAction();
         this.initializePhotoButtons();
+    }
+
+	private void loadReportFromInstanceStateIfAvailable(
+			Bundle savedInstanceState) {
+		if(savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_STATE_REPORT)){
+        	this.report = (Report)savedInstanceState.getSerializable(BUNDLE_STATE_REPORT);
+        }
+        else {
+        	this.report = new Report();	
+        }
+	}
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	outState.putSerializable(BUNDLE_STATE_REPORT, this.report);
+    	super.onSaveInstanceState(outState);
     }
 
     /**
@@ -87,19 +104,22 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if (resultCode == RESULT_OK){
+			if(requestCode == REQUEST_PICK_PHOTO){
+				this.report.setPhotoPath(new UriToPath().convertUriToPath(this, data.getData()));
+			}
+
+			this.refreshImageButtonsState();
+		}
+	}
+
+	private void refreshImageButtonsState() {
+		if(this.report.getPhotoPath().length() > 0){
 			TextView photoPathView = (TextView)findViewById(R.id.selectedPhotoPath);
 			findViewById(R.id.addImageButtonArea).setVisibility(View.GONE);
 			this.setRemoveImageButtonListener();
 			
-			//TODO: Show a delete button that will restore the buttons
-			if(requestCode == REQUEST_PICK_PHOTO){
-				this.takenPhotoPath = new UriToPath().convertUriToPath(this, data.getData());
-			}
-			
-			photoPathView.setText(this.takenPhotoPath);
+			photoPathView.setText(this.report.getPhotoPath());
 			findViewById(R.id.addedImageButton).setVisibility(View.VISIBLE);
-			
-			this.report.setPhotoPath(this.takenPhotoPath);
 		}
 	}
     
@@ -145,7 +165,9 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 			public void onClick(View v) {
 				onPickPhotoButtonPressed();
 			}
-		});		
+		});
+		
+		this.refreshImageButtonsState();
 	}
 	
 	private void setSubmitButtonAction() {
@@ -170,7 +192,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 
 	private void insertOutputFileUriToIntent(Intent intent) {
 		File imageFile = ImageFileFactory.getFile();
-		this.takenPhotoPath = imageFile.getAbsolutePath();
+		this.report.setPhotoPath(imageFile.getAbsolutePath());
 		Uri outputFile = Uri.fromFile(imageFile);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFile);
 		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1);
@@ -182,7 +204,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	}
 	
 	private void onRemovePictureButtonPressed() {
-		this.takenPhotoPath = "";
+		this.report.setPhotoPath("");
 		View imagePathView = findViewById(R.id.addedImageButton);
 		
 		this.animateImageButtonToExit(imagePathView);

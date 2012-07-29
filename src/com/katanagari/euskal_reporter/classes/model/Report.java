@@ -1,6 +1,10 @@
 package com.katanagari.euskal_reporter.classes.model;
 
-public class Report {
+import java.io.Serializable;
+
+public class Report implements Serializable{
+	private static final long serialVersionUID = -6558446850738676489L;
+	
 	private String category = "";
 	private String description = "";
 	private String photoPath = "";
