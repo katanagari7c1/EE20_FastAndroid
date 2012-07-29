@@ -1,15 +1,20 @@
 <resources>
 
-    <string name="app_name">Euskal Reporter</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">EE Issues Reporter</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main_screen">MainActivity</string>
+    <string name="title_activity_main_screen">Problem? Tell us!</string>
     
     <string name="description_field_hint">A brief description (optional)</string>
     <string name="submit_button">Submit</string>
     
     <string name="submit_dialog_title">Sending your report</string>
     <string name="submit_dialog_message">Please wait a second</string>
+    
+    <string name="thank_you">Thanks!</string>
+    <string name="post_another_issue">Another issue?</string>
+    <string name="thanks_message">We\'ll take care of your issue ASAP</string>
+    
+    <string name="report_failed">We couldn\'t receive your issue. Try again later</string>
     
 
 </resources>
