@@ -262,14 +262,16 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	@Override
 	public void reportSentSuccessfully() {
 		this.progressDialog.cancel();
-		Toast.makeText(this, "Report sent! Yeeeha!", Toast.LENGTH_LONG).show();
 		((ReporterApplication)getApplication()).mailSenderHasFinished();
+		
+		Intent intent = new Intent(this, SuccessfulReportActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
 	public void reportSendFailed() {
 		this.progressDialog.cancel();
-		Toast.makeText(this, "Ow! the report could not be sent", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, R.string.report_failed, Toast.LENGTH_LONG).show();
 		((ReporterApplication)getApplication()).mailSenderHasFinished();
 	}
 }

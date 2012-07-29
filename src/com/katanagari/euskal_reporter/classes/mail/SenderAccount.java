@@ -4,8 +4,8 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 
 public class SenderAccount extends Authenticator{
-	private final String username = "x@gmail.com";
-	private final String password = "x";
+	private final String username = "ee20.reporter.android@gmail.com";
+	private final String password = "fastAndroid";
 
 	@Override
 	protected PasswordAuthentication getPasswordAuthentication() {
