@@ -2,10 +2,10 @@
     <string name="subject">[Report] %1$s</string>
     <string name="message_body_head">
         Hi, \n
-	    An user posted a report in the \"%1$s\" category. \n
+        An user posted a report in the \"%1$s\" category. \n
 	</string>
     <string name="message_body_description">
-        The following extra info were provided: \n\n %1$s \n\n
+        The following extra info were provided as well: \n\n %1$s \n\n
     </string>
     <string name="message_body_photo">
         Also, a photo is available as an attachment of this message.
