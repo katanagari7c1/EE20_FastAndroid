@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
+import com.katanagari.euskal_reporter.application.ReporterApplication;
 import com.katanagari.euskal_reporter.classes.listener.CategorySpinnerListener;
 import com.katanagari.euskal_reporter.classes.mail.MailSender;
 import com.katanagari.euskal_reporter.classes.mail.MailSenderCallback;
@@ -33,11 +35,12 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	private static final int REQUEST_PICK_PHOTO = 1;
 	
 	private static final String BUNDLE_STATE_REPORT = "bundle.state.report";
+	private static final String BUNDLE_STATE_DIALOG_ACTIVE = "bundle.state.dialog.active";
 
 	
 	private Report report;
-	private ProgressDialog progressDialog;	
-
+	private ProgressDialog progressDialog;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +48,22 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		
         this.loadReportFromInstanceStateIfAvailable(savedInstanceState);
         
-		this.createProgressDialog();
+        ((ReporterApplication)getApplication()).registerMailSenderCallback(this);
+        
+		this.createProgressDialog(savedInstanceState);
         this.initializeCategorySpinnerData();
         this.initializeFormWidgetListeners();
         
         this.setSubmitButtonAction();
         this.initializePhotoButtons();
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	((ReporterApplication)getApplication()).unregisterMailSenderCallback();
+    	this.progressDialog.cancel();
+    	
+    	super.onDestroy();
     }
 
 	private void loadReportFromInstanceStateIfAvailable(
@@ -66,18 +79,23 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
     	outState.putSerializable(BUNDLE_STATE_REPORT, this.report);
+    	outState.putBoolean(BUNDLE_STATE_DIALOG_ACTIVE, this.progressDialog.isShowing());
     	super.onSaveInstanceState(outState);
     }
-
+    
     /**
      * Initialization helpers
      */
-	private void createProgressDialog() {
+	private void createProgressDialog(Bundle savedInstanceState) {
 		this.progressDialog = new ProgressDialog(this);
-		this.progressDialog.setTitle("lalala");
-		this.progressDialog.setMessage("Please wait a sec");
+		this.progressDialog.setTitle(R.string.submit_dialog_title);
+		this.progressDialog.setMessage(getString(R.string.submit_dialog_message));
 		this.progressDialog.setIndeterminate(true);
 		this.progressDialog.setCancelable(false);
+		
+		if (savedInstanceState != null && savedInstanceState.getBoolean(BUNDLE_STATE_DIALOG_ACTIVE)) {
+			this.progressDialog.show();
+		}
 	}
 
 	private void initializeFormWidgetListeners() {
@@ -230,7 +248,11 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		EditText description = (EditText)findViewById(R.id.descriptionField);
 		this.report.setDescription(description.getText().toString());
 		
-		new MailSender(this,this.getResources()).sendMessage(report, "javier.armendariz@quomai.com");
+		MailSender sender = ((ReporterApplication)getApplication()).getMailSender();
+		
+		if (sender.getStatus() != AsyncTask.Status.RUNNING) {
+			sender.sendMessage(this.report, "javier.armendariz@quomai.com");	
+		}
 	}
 	
 	/**
@@ -241,11 +263,13 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	public void reportSentSuccessfully() {
 		this.progressDialog.cancel();
 		Toast.makeText(this, "Report sent! Yeeeha!", Toast.LENGTH_LONG).show();
+		((ReporterApplication)getApplication()).mailSenderHasFinished();
 	}
 
 	@Override
 	public void reportSendFailed() {
 		this.progressDialog.cancel();
 		Toast.makeText(this, "Ow! the report could not be sent", Toast.LENGTH_LONG).show();
+		((ReporterApplication)getApplication()).mailSenderHasFinished();
 	}
 }

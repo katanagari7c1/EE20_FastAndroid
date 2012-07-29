@@ -63,13 +63,19 @@ public class MailSender extends AsyncTask<MimeMessage, Void, Boolean> {
 	
 	@Override
 	protected void onPostExecute(Boolean result) {
-		if (result == Boolean.TRUE){
-			callback.reportSentSuccessfully();
-		}
-		else {
-			callback.reportSendFailed();
+		if(callback != null) {
+			if (result == Boolean.TRUE){
+				callback.reportSentSuccessfully();
+			}
+			else {
+				callback.reportSendFailed();
+			}	
 		}
 		
 		super.onPostExecute(result);
+	}
+
+	public void setCallback(MailSenderCallback callback) {
+		this.callback = callback;
 	}
 }

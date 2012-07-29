@@ -8,5 +8,8 @@
     <string name="description_field_hint">A brief description (optional)</string>
     <string name="submit_button">Submit</string>
     
+    <string name="submit_dialog_title">Sending your report</string>
+    <string name="submit_dialog_message">Please wait a second</string>
+    
 
 </resources>
