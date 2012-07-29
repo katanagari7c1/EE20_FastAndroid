@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,6 +89,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		if (resultCode == RESULT_OK){
 			TextView photoPathView = (TextView)findViewById(R.id.selectedPhotoPath);
 			findViewById(R.id.addImageButtonArea).setVisibility(View.GONE);
+			this.setRemoveImageButtonListener();
 			
 			//TODO: Show a delete button that will restore the buttons
 			if(requestCode == REQUEST_PICK_PHOTO){
@@ -94,7 +97,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 			}
 			
 			photoPathView.setText(this.takenPhotoPath);
-			photoPathView.setVisibility(View.VISIBLE);
+			findViewById(R.id.addedImageButton).setVisibility(View.VISIBLE);
 			
 			this.report.setPhotoPath(this.takenPhotoPath);
 		}
@@ -105,6 +108,18 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	/**
 	 * Button actions
 	 */
+	
+	private void setRemoveImageButtonListener() {
+		Button removeImageButton = (Button)findViewById(R.id.removeFileButton);
+		removeImageButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onRemovePictureButtonPressed();
+			}
+		});
+
+	}
 	
 	private void initializePhotoButtons() {
 		Button addPhotoButton = (Button)findViewById(R.id.takePhotoButton);
@@ -164,6 +179,22 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	private void onPickPhotoButtonPressed() {
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, REQUEST_PICK_PHOTO);
+	}
+	
+	private void onRemovePictureButtonPressed() {
+		this.takenPhotoPath = "";
+		View imagePathView = findViewById(R.id.addedImageButton);
+		
+		this.animateImageButtonToExit(imagePathView);
+		
+		findViewById(R.id.addImageButtonArea).setVisibility(View.VISIBLE);
+	}
+
+	private void animateImageButtonToExit(View imagePathView) {
+		Animation animation = new TranslateAnimation(0, -1000, 0, 0);
+		animation.setDuration(200);
+		imagePathView.startAnimation(animation);
+		imagePathView.setVisibility(View.GONE);
 	}
 
 	private boolean deviceHasACamera() {
