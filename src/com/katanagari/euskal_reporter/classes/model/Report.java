@@ -3,7 +3,7 @@ package com.katanagari.euskal_reporter.classes.model;
 public class Report {
 	private String category = "";
 	private String description = "";
-	private String photoPath = "/storage/sdcard0/Pictures/turrets.png";
+	private String photoPath = "";
 	
 	public String getCategory(){
 		return this.category;

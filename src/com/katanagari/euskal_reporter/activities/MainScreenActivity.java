@@ -1,5 +1,7 @@
 package com.katanagari.euskal_reporter.activities;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.katanagari.euskal_reporter.R;
@@ -20,11 +23,17 @@ import com.katanagari.euskal_reporter.classes.listener.CategorySpinnerListener;
 import com.katanagari.euskal_reporter.classes.mail.MailSender;
 import com.katanagari.euskal_reporter.classes.mail.MailSenderCallback;
 import com.katanagari.euskal_reporter.classes.model.Report;
+import com.katanagari.euskal_reporter.classes.utils.ImageFileFactory;
+import com.katanagari.euskal_reporter.classes.utils.UriToPath;
 
 public class MainScreenActivity extends Activity implements MailSenderCallback {
+	private static final int REQUEST_TAKE_PHOTO = 0;
+	private static final int REQUEST_PICK_PHOTO = 1;
 	
 	private Report report;
 	private ProgressDialog progressDialog;
+	private String takenPhotoPath;
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,11 +84,24 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		
-		if(resultCode == RESULT_OK){
-			Uri targetUri = data.getData();
+		if (resultCode == RESULT_OK){
+			TextView photoPathView = (TextView)findViewById(R.id.selectedPhotoPath);
+			findViewById(R.id.addImageButtonArea).setVisibility(View.GONE);
+			
+			//TODO: Show a delete button that will restore the buttons
+			if(requestCode == REQUEST_PICK_PHOTO){
+				this.takenPhotoPath = new UriToPath().convertUriToPath(this, data.getData());
+			}
+			
+			photoPathView.setText(this.takenPhotoPath);
+			photoPathView.setVisibility(View.VISIBLE);
+			
+			this.report.setPhotoPath(this.takenPhotoPath);
 		}
 	}
     
+
+
 	/**
 	 * Button actions
 	 */
@@ -125,12 +147,23 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	
 	private void onAddPhotoButtonPressed() {
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		startActivityForResult(intent, 0);			
+
+		this.insertOutputFileUriToIntent(intent);
+		
+		startActivityForResult(intent, REQUEST_TAKE_PHOTO);			
+	}
+
+	private void insertOutputFileUriToIntent(Intent intent) {
+		File imageFile = ImageFileFactory.getFile();
+		this.takenPhotoPath = imageFile.getAbsolutePath();
+		Uri outputFile = Uri.fromFile(imageFile);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFile);
+		intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1);
 	}
 	
 	private void onPickPhotoButtonPressed() {
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		startActivityForResult(intent, 0);
+		startActivityForResult(intent, REQUEST_PICK_PHOTO);
 	}
 
 	private boolean deviceHasACamera() {
