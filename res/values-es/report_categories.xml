@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="report_categories">
+        <item>Aquí huele como que han fumao...</item>
+        <item>Aquí hay un switch sin pegatina!</item>
+        <item>Una nevera enchufada a la corriente</item>
+        <item>Oh no! Interneeeeeeeeeet</item>
+        <item>Creo que me han robado</item>
+        <item>Demasiada basura</item>
+        <item>Fuego en la sala</item>
+        <item>Apocalipsis zombie!!!</item>
+        <item>Otros (especifica en la descripción)</item>
+    </string-array>
+
+</resources>

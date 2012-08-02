@@ -1,0 +1,13 @@
+<resources>
+    <string name="subject">[Incidencia] %1$s</string>
+    <string name="message_body_head">
+        Hola! \n
+        Un usuario acaba de enviar una queja de la categoría \"%1$s\". \n
+	</string>
+    <string name="message_body_description">
+        También ha puesto la siguiente información: \n\n %1$s \n\n
+    </string>
+    <string name="message_body_photo">
+        Y además ha incluido una foto que deberías tener aquí como adjunto.
+    </string>
+</resources>

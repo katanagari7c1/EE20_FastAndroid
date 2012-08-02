@@ -251,7 +251,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		MailSender sender = ((ReporterApplication)getApplication()).getMailSender();
 		
 		if (sender.getStatus() != AsyncTask.Status.RUNNING) {
-			sender.sendMessage(this.report, "javier.armendariz@quomai.com");	
+			sender.sendMessage(this.report, getString(R.string.contact_email));	
 		}
 	}
 	

@@ -1,0 +1,21 @@
+<resources>
+
+    <string name="title_activity_main_screen">EE Reporter</string>
+    
+    <string name="description_field_hint">Una breve descripción (esto es opcional)</string>
+    <string name="submit_button">Enviar</string>
+    
+    <string name="submit_dialog_title">Enviando tu incidencia</string>
+    <string name="submit_dialog_message">Esto puede tardar. Paciencia...</string>
+    
+    <string name="take_photo">Saca una foto</string>
+    <string name="pick_gallery">Impórtala de la galería</string>
+    
+    <string name="thank_you">Gracias!</string>
+    <string name="post_another_issue">Algo más?</string>
+    <string name="thanks_message">Nos encargaremos de tu incidencia ASAP</string>
+    
+    <string name="report_failed">No hemos podido recibir tu incidencia. Inténtalo más tarde</string>
+    
+
+</resources>

@@ -47,14 +47,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Take a photo" />
+                    android:text="@string/take_photo" />
 
                 <Button
                     android:id="@+id/pickPhotoButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="Pick from gallery" />
+                    android:text="@string/pick_gallery" />
             </LinearLayout>
 
             <LinearLayout
