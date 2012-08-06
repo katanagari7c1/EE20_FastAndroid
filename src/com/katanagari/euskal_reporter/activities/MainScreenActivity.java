@@ -3,13 +3,16 @@ package com.katanagari.euskal_reporter.activities;
 import java.io.File;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -40,6 +43,8 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	
 	private Report report;
 	private ProgressDialog progressDialog;
+	
+	private EditText emailDialogTextField = null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -242,6 +247,36 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 	}
 	
 	private void onSubmitButtonPressed(){
+		LayoutInflater inflater = getLayoutInflater();
+		View dialogView = inflater.inflate(R.layout.send_dialog_layout, null);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		this.emailDialogTextField = (EditText)dialogView.findViewById(R.id.send_dialog_textfield);
+		
+		builder.setView(dialogView)
+		.setTitle(R.string.send_to_email_title)
+		.setPositiveButton(getString(R.string.send_to_email_ok_button), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (emailDialogTextField != null) {
+					submitReportToAddress(emailDialogTextField.getText().toString());	
+				}
+			}
+
+		})
+		.setNegativeButton(getString(R.string.send_to_email_cancel_button), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		})
+		.setCancelable(false);
+		
+		builder.create().show();
+	}
+	
+	private void submitReportToAddress(String address) {
 		this.progressDialog.show();
 		//Check if form has the minimum amount of data required
 		//If so, send it using a mail helper object
@@ -251,7 +286,7 @@ public class MainScreenActivity extends Activity implements MailSenderCallback {
 		MailSender sender = ((ReporterApplication)getApplication()).getMailSender();
 		
 		if (sender.getStatus() != AsyncTask.Status.RUNNING) {
-			sender.sendMessage(this.report, getString(R.string.contact_email));	
+			sender.sendMessage(this.report, address);	
 		}
 	}
 	
