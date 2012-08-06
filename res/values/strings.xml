@@ -18,5 +18,11 @@
     
     <string name="report_failed">We couldn\'t receive your issue. Try again later</string>
     
+    <string name="send_to_email_title">Set report recipient</string>
+    <string name="send_to_email_description">To whom would you like to send this?</string>
+    <string name="send_to_email_hint">email@address.com</string>
+    
+    <string name="send_to_email_ok_button">Send</string>
+    <string name="send_to_email_cancel_button">Cancel</string>
 
 </resources>

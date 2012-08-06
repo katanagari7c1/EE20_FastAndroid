@@ -17,5 +17,9 @@
     
     <string name="report_failed">No hemos podido recibir tu incidencia. Inténtalo más tarde</string>
     
-
+    <string name="send_to_email_title">Elegir destinatario</string>
+    <string name="send_to_email_description">A quién quieres enviar la incidencia?</string>
+    
+    <string name="send_to_email_ok_button">Enviar</string>
+    <string name="send_to_email_cancel_button">Cancelar</string>
 </resources>
